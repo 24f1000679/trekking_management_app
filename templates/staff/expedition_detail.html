@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block page_title %}Manage Expedition{% endblock %}
+{% block body %}
+<h2 class="mb-3">{{ expedition.title }} <small class="text-muted">({{ expedition.region }})</small></h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card"><div class="card-body">
+            <h5 class="card-title">Update Seats Left</h5>
+            <form method="POST">
+                <input type="hidden" name="action" value="update_seats">
+                <div class="input-group">
+                    <input type="number" name="seats_left" min="0" max="{{ expedition.capacity }}"
+                           value="{{ expedition.seats_left }}" class="form-control">
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </div>
+                <div class="form-text">Total capacity: {{ expedition.capacity }}</div>
+            </form>
+        </div></div>
+    </div>
+    <div class="col-md-6">
+        <div class="card"><div class="card-body">
+            <h5 class="card-title">Update State</h5>
+            <p>Current: <span class="badge bg-secondary">{{ expedition.current_state }}</span></p>
+            <form method="POST" class="d-flex gap-2 flex-wrap">
+                <input type="hidden" name="action" value="change_state">
+                <button type="submit" name="current_state" value="Open" class="btn btn-outline-success"
+                        {% if expedition.current_state not in ['Approved','Closed'] %}disabled{% endif %}>Open</button>
+                <button type="submit" name="current_state" value="Closed" class="btn btn-outline-warning"
+                        {% if expedition.current_state != 'Open' %}disabled{% endif %}>Close</button>
+                <button type="submit" name="current_state" value="Completed" class="btn btn-outline-secondary"
+                        {% if expedition.current_state not in ['Open','Closed'] %}disabled{% endif %}>Complete</button>
+            </form>
+        </div></div>
+    </div>
+</div>
+
+<h4>Signed-Up Trekkers ({{ signed_up|length }})</h4>
+<div class="table-responsive">
+<table class="table table-striped table-bordered bg-white align-middle">
+    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Reserved On</th><th>Status</th></tr></thead>
+    <tbody>
+        {% for p in signed_up %}
+        <tr>
+            <td>{{ p.full_name }}</td><td>{{ p.email }}</td><td>{{ p.phone_no }}</td><td>{{ p.reserved_on }}</td>
+            <td>
+                {% if p.reservation_state == 'Booked' %}<span class="badge bg-success">Booked</span>
+                {% elif p.reservation_state == 'Cancelled' %}<span class="badge bg-danger">Cancelled</span>
+                {% else %}<span class="badge bg-secondary">Completed</span>{% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center">Nobody has signed up yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<a href="{{ url_for('staff.my_expeditions') }}" class="btn btn-outline-secondary">Back</a>
+{% endblock %}

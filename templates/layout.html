@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block page_title %}Trekking Manager{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('auth.landing') }}">Trekking Manager</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navBar">
+            <ul class="navbar-nav ms-auto">
+                {% if session.account_id %}
+                    {% if session.role == 'admin' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.overview') }}">Overview</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.list_expeditions') }}">Expeditions</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.list_guides') }}">Guides</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.list_trekkers') }}">Trekkers</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.all_reservations') }}">Reservations</a></li>
+                    {% elif session.role == 'staff' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('staff.my_expeditions') }}">My Expeditions</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('staff.profile') }}">Profile</a></li>
+                    {% elif session.role == 'user' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('trekker.overview') }}">Overview</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('trekker.browse') }}">Browse</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('trekker.my_reservations') }}">My Reservations</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('trekker.profile') }}">Profile</a></li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <span class="nav-link text-light">{{ session.full_name }} ({{ session.role }})</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Sign out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Sign in</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% with flashes = get_flashed_messages(with_categories=true) %}
+        {% if flashes %}
+            {% for tone, message in flashes %}
+                <div class="alert alert-{{ tone }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block body %}{% endblock %}
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

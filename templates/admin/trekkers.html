@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block page_title %}Manage Trekkers{% endblock %}
+{% block body %}
+<h2 class="mb-3">Manage Trekkers</h2>
+
+<form method="GET" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search name, email or ID">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+        <a href="{{ url_for('admin.list_trekkers') }}" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+<div class="table-responsive">
+<table class="table table-striped table-bordered bg-white align-middle">
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+        {% for t in trekkers %}
+        <tr>
+            <td>{{ t.id }}</td><td>{{ t.full_name }}</td><td>{{ t.email }}</td><td>{{ t.phone_no }}</td>
+            <td>
+                {% if t.account_status == 'active' %}<span class="badge bg-success">Active</span>
+                {% else %}<span class="badge bg-danger">Blacklisted</span>{% endif %}
+            </td>
+            <td class="text-nowrap">
+                {% if t.account_status != 'blacklisted' %}
+                    <form method="POST" action="{{ url_for('admin.blacklist_trekker', account_id=t.id) }}" class="d-inline"
+                          onsubmit="return confirm('Blacklist this trekker?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Blacklist</button>
+                    </form>
+                {% else %}
+                    <form method="POST" action="{{ url_for('admin.reinstate_trekker', account_id=t.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-success">Reinstate</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center">No trekkers found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

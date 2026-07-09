@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block page_title %}My Profile{% endblock %}
+{% block body %}
+<h2 class="mb-3">My Profile</h2>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card"><div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="full_name" class="form-control" value="{{ account.full_name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email (fixed)</label>
+                    <input type="email" class="form-control" value="{{ account.email }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone_no" class="form-control" value="{{ account.phone_no or '' }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">New Password <small class="text-muted">(leave blank to keep current)</small></label>
+                    <input type="password" name="password" class="form-control" minlength="4">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+            </form>
+        </div></div>
+    </div>
+</div>
+{% endblock %}

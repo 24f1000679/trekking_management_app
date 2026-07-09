@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block page_title %}Admin Overview{% endblock %}
+{% block body %}
+<h2 class="mb-4">Admin Overview</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <h6 class="text-muted">Expeditions</h6><h2>{{ counts.expeditions }}</h2>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <h6 class="text-muted">Trekkers</h6><h2>{{ counts.trekkers }}</h2>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <h6 class="text-muted">Guides</h6><h2>{{ counts.guides }}</h2>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card"><div class="card-body">
+            <h6 class="text-muted">Live Reservations</h6><h2>{{ counts.live_reservations }}</h2>
+        </div></div>
+    </div>
+</div>
+
+{% if counts.pending_guides > 0 %}
+<div class="alert alert-warning">
+    {{ counts.pending_guides }} guide registration(s) waiting on approval.
+    <a href="{{ url_for('admin.list_guides') }}">Review now</a>
+</div>
+{% endif %}
+
+<div class="d-flex gap-2 mb-4">
+    <a href="{{ url_for('admin.new_expedition') }}" class="btn btn-primary">+ New Expedition</a>
+    <a href="{{ url_for('admin.list_expeditions') }}" class="btn btn-outline-primary">Manage Expeditions</a>
+</div>
+
+<h4>Newest Expeditions</h4>
+<table class="table table-striped table-bordered bg-white">
+    <thead><tr><th>ID</th><th>Title</th><th>Region</th><th>Difficulty</th><th>State</th></tr></thead>
+    <tbody>
+        {% for exp in newest_expeditions %}
+        <tr>
+            <td>{{ exp.id }}</td><td>{{ exp.title }}</td><td>{{ exp.region }}</td>
+            <td>{{ exp.difficulty_level }}</td>
+            <td><span class="badge bg-secondary">{{ exp.current_state }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center">Nothing created yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

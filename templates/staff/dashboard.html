@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block page_title %}My Expeditions{% endblock %}
+{% block body %}
+<h2 class="mb-4">My Assigned Expeditions</h2>
+
+<div class="table-responsive">
+<table class="table table-striped table-bordered bg-white align-middle">
+    <thead>
+        <tr>
+            <th>ID</th><th>Title</th><th>Region</th><th>Difficulty</th>
+            <th>Seats (left/total)</th><th>Signed Up</th><th>State</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for exp in expeditions %}
+        <tr>
+            <td>{{ exp.id }}</td><td>{{ exp.title }}</td><td>{{ exp.region }}</td><td>{{ exp.difficulty_level }}</td>
+            <td>{{ exp.seats_left }} / {{ exp.capacity }}</td>
+            <td>{{ signup_counts[exp.id] }}</td>
+            <td><span class="badge bg-secondary">{{ exp.current_state }}</span></td>
+            <td><a href="{{ url_for('staff.expedition_detail', expedition_id=exp.id) }}" class="btn btn-sm btn-outline-primary">Manage</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="text-center">Nothing assigned to you yet - wait for the admin.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

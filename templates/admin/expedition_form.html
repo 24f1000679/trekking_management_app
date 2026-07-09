@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block page_title %}{{ 'Edit Expedition' if expedition else 'New Expedition' }}{% endblock %}
+{% block body %}
+<h2 class="mb-3">{{ 'Edit Expedition' if expedition else 'New Expedition' }}</h2>
+<div class="card"><div class="card-body">
+<form method="POST">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Title</label>
+            <input type="text" name="title" class="form-control"
+                   value="{{ form_data.get('title', expedition.title if expedition else '') }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Region / Location</label>
+            <input type="text" name="region" class="form-control"
+                   value="{{ form_data.get('region', expedition.region if expedition else '') }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Difficulty</label>
+            <select name="difficulty_level" class="form-select" required>
+                {% set cur_diff = form_data.get('difficulty_level', expedition.difficulty_level if expedition else '') %}
+                {% for level in ['Easy', 'Moderate', 'Hard'] %}
+                <option value="{{ level }}" {% if cur_diff == level %}selected{% endif %}>{{ level }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Duration (days)</label>
+            <input type="number" name="num_days" min="1" class="form-control"
+                   value="{{ form_data.get('num_days', expedition.num_days if expedition else 1) }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Capacity (total seats)</label>
+            <input type="number" name="capacity" min="1" class="form-control"
+                   value="{{ form_data.get('capacity', expedition.capacity if expedition else 10) }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Start Date</label>
+            <input type="date" name="begin_date" class="form-control"
+                   value="{{ form_data.get('begin_date', expedition.begin_date if expedition else '') }}">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">End Date</label>
+            <input type="date" name="finish_date" class="form-control"
+                   value="{{ form_data.get('finish_date', expedition.finish_date if expedition else '') }}">
+            <div class="form-text">End date must not be before start date.</div>
+        </div>
+        <div class="col-12">
+            <label class="form-label">Notes</label>
+            <textarea name="notes" class="form-control" rows="3">{{ form_data.get('notes', expedition.notes if expedition else '') }}</textarea>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">{{ 'Save Changes' if expedition else 'Create Expedition' }}</button>
+    <a href="{{ url_for('admin.list_expeditions') }}" class="btn btn-outline-secondary mt-3">Cancel</a>
+</form>
+</div></div>
+{% endblock %}

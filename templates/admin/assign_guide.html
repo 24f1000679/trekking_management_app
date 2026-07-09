@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block page_title %}Assign Guide{% endblock %}
+{% block body %}
+<h2 class="mb-3">Assign a Guide to "{{ expedition.title }}"</h2>
+<div class="card"><div class="card-body">
+    {% if eligible_guides %}
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Approved guides</label>
+            <select name="guide_id" class="form-select" required>
+                {% for g in eligible_guides %}
+                <option value="{{ g.id }}" {% if expedition.guide_id == g.id %}selected{% endif %}>
+                    {{ g.full_name }} ({{ g.email }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Assign</button>
+        <a href="{{ url_for('admin.list_expeditions') }}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+    {% else %}
+    <p class="text-muted">No approved guides yet. Approve one under Guides first.</p>
+    <a href="{{ url_for('admin.list_guides') }}" class="btn btn-outline-primary">Go to Guides</a>
+    {% endif %}
+</div></div>
+{% endblock %}
